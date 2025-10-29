@@ -12,8 +12,8 @@ class Vote(commands.Cog):
         embed = discord.Embed(
             title="🗳️ Support DarkAge SMP",
             description=(
-                "**Vote on TopG:** [Click Here](https://topg.org/minecraft-servers/server-123456)\n"
-                "**Buy Me a Coffee:** [Support here](https://buymeacoffee.com/darkagesmp)"
+                "**Vote on TopG:** [Click Here](https://topg.org/minecraft-servers/server-676757-changeme#vote)\n"
+                "**Buy Me a Coffee:** [Support here](https://buymeacoffee.com/donatefordarkage)"
             ),
             color=discord.Color.orange()
         )
