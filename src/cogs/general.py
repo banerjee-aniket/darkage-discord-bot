@@ -96,7 +96,7 @@ class General(commands.Cog):
             await interaction.response.defer()
 
             # Using default Minecraft status API (example with mc.hypixel.net - replace with actual SMP server)
-            server_ip = "mc.hypixel.net"  # Replace with actual SMP server IP
+            server_ip = "Darkagesmp.enderman.cloud:31938"  # Replace with actual SMP server IP
             api_url = f"https://api.mcsrvstat.us/3/{server_ip}"
 
             async with aiohttp.ClientSession() as session:
