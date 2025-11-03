@@ -12,170 +12,186 @@ class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @app_commands.command(name="ping", description="Check if the bot is alive")
+    @app_commands.command(name="ping", description="Return bot latency")
     async def ping(self, interaction: discord.Interaction):
-        await interaction.response.send_message("🏓 Pong! Bot is active and running fine!")
+        latency = round(self.bot.latency * 1000)
+        await interaction.response.send_message(f"🏓 Pong! Bot latency: {latency}ms")
 
-    @app_commands.command(name="info", description="Display server information")
+    @app_commands.command(name="info", description="Read server info from info.md")
     async def info(self, interaction: discord.Interaction):
         try:
             info_path = Path("info.md")
 
             if not info_path.exists():
-                embed = discord.Embed(
-                    title="Server Information",
-                    description="Information file not found. Please contact server admin.",
-                    color=discord.Color.red()
-                )
-                embed.set_footer(text="Error: File not found")
-                await interaction.response.send_message(embed=embed)
+                await interaction.response.send_message("❌ info.md file not found.")
                 return
 
-            try:
-                with open(info_path, 'r', encoding='utf-8') as file:
-                    content = file.read().strip()
+            with open(info_path, 'r', encoding='utf-8') as file:
+                content = file.read().strip()
 
-                if not content or len(content) < 5:
-                    description = "No information available yet. Check back later!"
-                else:
-                    description = content
-
-                embed = discord.Embed(
-                    title="Server Information",
-                    description=description,
-                    color=discord.Color.blue()  # #3498db
-                )
-                embed.set_footer(text=f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-                await interaction.response.send_message(embed=embed)
-
-            except PermissionError:
-                embed = discord.Embed(
-                    title="Server Information",
-                    description="Unable to access information file. Please check file permissions.",
-                    color=discord.Color.red()
-                )
-                embed.set_footer(text="Error: Permission denied")
-                await interaction.response.send_message(embed=embed)
-
-            except UnicodeDecodeError:
-                embed = discord.Embed(
-                    title="Server Information",
-                    description="Information file format error. Please contact admin.",
-                    color=discord.Color.red()
-                )
-                embed.set_footer(text="Error: File format")
-                await interaction.response.send_message(embed=embed)
+            if not content:
+                await interaction.response.send_message("ℹ️ No information available in info.md yet.")
+            else:
+                await interaction.response.send_message(f"**Server Information:**\n\n{content}")
 
         except Exception as e:
-            embed = discord.Embed(
-                title="Server Information",
-                description="Error reading information. Please try again later.",
-                color=discord.Color.red()
-            )
-            embed.set_footer(text="Error: Unknown")
-            await interaction.response.send_message(embed=embed)
+            await interaction.response.send_message("❌ Error reading info.md file.")
 
-    @app_commands.command(name="help", description="Show all available commands")
-    async def help(self, interaction: discord.Interaction):
-        embed = discord.Embed(
-            title="Bot Commands",
-            description="Here are all the available slash commands:",
-            color=discord.Color.green()  # #2ecc71
-        )
+    @app_commands.command(name="news", description="Read latest server announcement from notice.md")
+    async def news(self, interaction: discord.Interaction):
+        try:
+            notice_path = Path("notice.md")
 
-        commands_list = [
-            ("/ping", "Check if the bot is alive"),
-            ("/info", "Display server information"),
-            ("/help", "Show all available commands"),
-            ("/server", "Show server information"),
-            ("/user", "Show your user information"),
-            ("/about", "Show bot information")
-        ]
+            if not notice_path.exists():
+                await interaction.response.send_message("❌ notice.md file not found.")
+                return
 
-        for command, description in commands_list:
-            embed.add_field(name=command, value=description, inline=False)
+            with open(notice_path, 'r', encoding='utf-8') as file:
+                lines = file.readlines()
 
-        embed.set_footer(text="Use /command_name to execute")
-        await interaction.response.send_message(embed=embed)
+            # Find the most recent entry (last ## heading)
+            latest_entry = []
+            found_entry = False
 
-    @app_commands.command(name="server", description="Show server information")
-    async def server(self, interaction: discord.Interaction):
-        if not interaction.guild:
-            embed = discord.Embed(
-                title="Server Information",
-                description="This command can only be used in a server.",
-                color=discord.Color.red()
-            )
-            await interaction.response.send_message(embed=embed)
+            for line in reversed(lines):
+                if line.strip().startswith('## ') and not found_entry:
+                    latest_entry.insert(0, line)
+                    found_entry = True
+                elif found_entry and line.strip().startswith('## '):
+                    break
+                elif found_entry:
+                    latest_entry.insert(0, line)
+
+            if not latest_entry:
+                await interaction.response.send_message("ℹ️ No announcements found in notice.md.")
+            else:
+                entry_text = ''.join(latest_entry).strip()
+                await interaction.response.send_message(f"📢 **Latest Announcement:**\n\n{entry_text}")
+
+        except Exception as e:
+            await interaction.response.send_message("❌ Error reading notice.md file.")
+
+    @app_commands.command(name="rules", description="Return the DarkAge SMP rulebook from rules.md")
+    async def rules(self, interaction: discord.Interaction):
+        try:
+            rules_path = Path("rules.md")
+
+            if not rules_path.exists():
+                await interaction.response.send_message("❌ rules.md file not found.")
+                return
+
+            with open(rules_path, 'r', encoding='utf-8') as file:
+                content = file.read().strip()
+
+            if not content:
+                await interaction.response.send_message("ℹ️ No rules available in rules.md yet.")
+            else:
+                await interaction.response.send_message(f"📖 **DarkAge SMP Rules:**\n\n{content}")
+
+        except Exception as e:
+            await interaction.response.send_message("❌ Error reading rules.md file.")
+
+    @app_commands.command(name="status", description="Check SMP server status using Minecraft API")
+    async def status(self, interaction: discord.Interaction):
+        try:
+            await interaction.response.defer()
+
+            # Using default Minecraft status API (example with mc.hypixel.net - replace with actual SMP server)
+            server_ip = "mc.hypixel.net"  # Replace with actual SMP server IP
+            api_url = f"https://api.mcsrvstat.us/3/{server_ip}"
+
+            async with aiohttp.ClientSession() as session:
+                async with session.get(api_url) as response:
+                    if response.status == 200:
+                        data = await response.json()
+
+                        if data.get('online'):
+                            version = data.get('version', 'Unknown')
+                            players = data.get('players', {})
+                            online_count = players.get('online', 0)
+                            max_count = players.get('max', 0)
+
+                            embed = discord.Embed(
+                                title="🟢 Server Status: Online",
+                                color=discord.Color.green()
+                            )
+                            embed.add_field(name="Version", value=version, inline=True)
+                            embed.add_field(name="Players", value=f"{online_count}/{max_count}", inline=True)
+                            embed.set_footer(text=f"Server: {server_ip}")
+                        else:
+                            embed = discord.Embed(
+                                title="🔴 Server Status: Offline",
+                                color=discord.Color.red()
+                            )
+                            embed.description = "The SMP server is currently offline."
+                            embed.set_footer(text=f"Server: {server_ip}")
+                    else:
+                        embed = discord.Embed(
+                            title="❌ Status Check Failed",
+                            color=discord.Color.red()
+                        )
+                        embed.description = "Unable to retrieve server status."
+
+            await interaction.followup.send(embed=embed)
+
+        except Exception as e:
+            await interaction.followup.send("❌ Error checking server status.")
+
+    @app_commands.command(name="players", description="Return the full SMP player list from players.md")
+    async def players(self, interaction: discord.Interaction):
+        try:
+            players_path = Path("players.md")
+
+            if not players_path.exists():
+                await interaction.response.send_message("❌ No registered players yet.")
+                return
+
+            with open(players_path, 'r', encoding='utf-8') as file:
+                content = file.read().strip()
+
+            if not content:
+                await interaction.response.send_message("ℹ️ No registered players yet.")
+            else:
+                await interaction.response.send_message(f"👥 **SMP Player Roster:**\n\n{content}")
+
+        except Exception as e:
+            await interaction.response.send_message("❌ Error reading players.md file.")
+
+    @app_commands.command(name="player", description="Manage player roster")
+    @app_commands.describe(action="Action to perform", username="Minecraft username")
+    async def player(self, interaction: discord.Interaction, action: str, username: str):
+        if action.lower() != "add":
+            await interaction.response.send_message("❌ Invalid action. Use `/player add <username>`")
             return
 
-        guild = interaction.guild
-        embed = discord.Embed(
-            title=guild.name,
-            color=discord.Color.purple()  # #9b59b6
-        )
+        try:
+            players_path = Path("players.md")
 
-        embed.add_field(name="Owner", value=f"<@{guild.owner_id}>", inline=True)
-        embed.add_field(name="Members", value=str(guild.member_count), inline=True)
-        embed.add_field(name="Created", value=guild.created_at.strftime("%Y-%m-%d"), inline=True)
+            # Read existing players
+            existing_players = []
+            if players_path.exists():
+                with open(players_path, 'r', encoding='utf-8') as file:
+                    content = file.read()
+                    # Extract player names (simplified - assumes format like "- PlayerName")
+                    for line in content.split('\n'):
+                        if line.strip().startswith('- '):
+                            player_name = line.strip()[2:].strip()
+                            if player_name:
+                                existing_players.append(player_name.lower())
 
-        boost_level = guild.premium_tier
-        embed.add_field(name="Boost Level", value=f"Level {boost_level}", inline=True)
-        embed.add_field(name="Emojis", value=str(len(guild.emojis)), inline=True)
+            # Check for duplicates
+            if username.lower() in existing_players:
+                await interaction.response.send_message(f"⚠️ Player '{username}' is already registered.")
+                return
 
-        if guild.icon:
-            embed.set_thumbnail(url=guild.icon.url)
+            # Add new player
+            with open(players_path, 'a', encoding='utf-8') as file:
+                file.write(f"- {username}\n")
 
-        embed.set_footer(text=f"Server ID: {guild.id}")
-        await interaction.response.send_message(embed=embed)
+            await interaction.response.send_message(f"✅ Successfully added '{username}' to the player roster!")
 
-    @app_commands.command(name="user", description="Show your user information")
-    @app_commands.describe(target="Select a user to view their info (optional)")
-    async def user(self, interaction: discord.Interaction, target: discord.Member = None):
-        user = target or interaction.user
-
-        embed = discord.Embed(
-            title=user.display_name,
-            color=discord.Color.orange()  # #e67e22
-        )
-
-        embed.add_field(name="Username", value=f"{user.name}#{user.discriminator}", inline=True)
-
-        if interaction.guild:
-            member = interaction.guild.get_member(user.id)
-            if member:
-                embed.add_field(name="Joined Server", value=member.joined_at.strftime("%Y-%m-%d"), inline=True)
-                if member.top_role and member.top_role.name != "@everyone":
-                    embed.add_field(name="Top Role", value=member.top_role.mention, inline=True)
-
-        embed.add_field(name="Account Created", value=user.created_at.strftime("%Y-%m-%d"), inline=True)
-
-        if user.avatar:
-            embed.set_thumbnail(url=user.avatar.url)
-
-        embed.set_footer(text=f"User ID: {user.id}")
-        await interaction.response.send_message(embed=embed)
-
-    @app_commands.command(name="about", description="Show bot information")
-    async def about(self, interaction: discord.Interaction):
-        embed = discord.Embed(
-            title="Darkage Bot",
-            description="A multi-purpose Discord bot for server management and entertainment.",
-            color=discord.Color.dark_blue()  # #2c3e50
-        )
-
-        embed.add_field(name="Version", value="1.0.0", inline=True)
-        embed.add_field(name="Creator", value="Server Administration", inline=True)
-        embed.add_field(name="Servers", value=str(len(self.bot.guilds)), inline=True)
-
-        uptime = datetime.now() - self.bot.user.created_at.replace(tzinfo=None)
-        days = uptime.days
-        hours, remainder = divmod(uptime.seconds, 3600)
-        embed.add_field(name="Uptime", value=f"{days}d {hours}h", inline=True)
-
-        embed.set_thumbnail(url=self.bot.user.avatar.url if self.bot.user.avatar else None)
-        embed.set_footer(text="Made with discord.py")
-        await interaction.response.send_message(embed=embed)
+        except Exception as e:
+            await interaction.response.send_message("❌ Error adding player to roster.")
 
 # THIS IS MANDATORY ↓↓↓
 async def setup(bot):
