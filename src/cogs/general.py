@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
+import os
+from datetime import datetime
+from pathlib import Path
 
 class General(commands.Cog):
     def __init__(self, bot):
