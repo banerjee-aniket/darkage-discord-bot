@@ -138,10 +138,12 @@ class General(commands.Cog):
 
         embed.add_field(name="Username", value=f"{user.name}#{user.discriminator}", inline=True)
 
-        if interaction.guild and member := interaction.guild.get_member(user.id):
-            embed.add_field(name="Joined Server", value=member.joined_at.strftime("%Y-%m-%d"), inline=True)
-            if member.top_role and member.top_role.name != "@everyone":
-                embed.add_field(name="Top Role", value=member.top_role.mention, inline=True)
+        if interaction.guild:
+            member = interaction.guild.get_member(user.id)
+            if member:
+                embed.add_field(name="Joined Server", value=member.joined_at.strftime("%Y-%m-%d"), inline=True)
+                if member.top_role and member.top_role.name != "@everyone":
+                    embed.add_field(name="Top Role", value=member.top_role.mention, inline=True)
 
         embed.add_field(name="Account Created", value=user.created_at.strftime("%Y-%m-%d"), inline=True)
 
