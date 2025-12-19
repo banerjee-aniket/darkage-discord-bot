@@ -20,7 +20,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("Main")
 
-# Load environment variables
+
 load_dotenv()
 
 class DarkageBot(commands.Bot):
