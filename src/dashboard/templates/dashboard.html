@@ -1,10 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="card">
-    <div class="card-header">Configuration</div>
-    <div class="card-body">
+<style>
+body{background:#0e0e0e;color:#e5e1d6}
+.navbar{background:#101010!important;border-bottom:1px solid #2a2320;box-shadow:0 6px 24px rgba(0,0,0,.6)}
+.container{max-width:980px;margin-top:64px}
+.panel{background:#191511;border:1px solid #3a2f25;border-radius:12px;box-shadow:inset 0 0 0 1px #000,0 14px 38px rgba(0,0,0,.55);padding:0}
+.panel-header{background:#221d18;color:#d2c19a;border-bottom:1px solid #3a2f25;font-family:Georgia,Palatino,serif;font-weight:600;letter-spacing:.5px;padding:14px 18px}
+.panel-body{padding:18px}
+.section-title{font-family:Georgia,Palatino,serif;color:#d2c19a;margin-top:10px;margin-bottom:12px}
+.divider{height:1px;background:#2a2320;margin:18px 0}
+.form-label{color:#d9d3c4}
+.form-control{background:#0f0f10;border:1px solid #3f3a35;color:#e5e1d6;border-radius:8px}
+.form-control:focus{border-color:#8b7742;box-shadow:0 0 0 .2rem rgba(139,119,66,.25)}
+.form-check-input{background:#0f0f10;border:1px solid #3f3a35}
+.form-check-input:checked{background-color:#8b7742;border-color:#8b7742}
+.form-text{color:#a59c8a}
+.btn-success{background:#6f757b;border-color:#5a6065;color:#e5e1d6}
+.btn-success:hover{background:#5a6065;border-color:#4c5156}
+.btn-primary{background:#8b7742;border-color:#7a6a3a;color:#0e0e0e}
+.btn-primary:hover{background:#7a6a3a;border-color:#6b5d33;color:#0e0e0e}
+.link{color:#d2c19a}
+</style>
+<div class="panel">
+    <div class="panel-header">Configuration</div>
+    <div class="panel-body">
         <form method="post" action="/config/update">
-            <h5>Minecraft Server</h5>
+            <div class="section-title">Minecraft Server</div>
             <div class="mb-3">
                 <label class="form-label">IP</label>
                 <input type="text" class="form-control" name="minecraft_ip" value="{{ config.minecraft.ip }}">
@@ -13,9 +34,8 @@
                 <label class="form-label">Port</label>
                 <input type="number" class="form-control" name="minecraft_port" value="{{ config.minecraft.port }}">
             </div>
-
-            <hr>
-            <h5>Links</h5>
+            <div class="divider"></div>
+            <div class="section-title">Links</div>
             <div class="mb-3">
                 <label class="form-label">Website</label>
                 <input type="url" class="form-control" name="link_website" value="{{ config.links.website }}">
@@ -28,15 +48,13 @@
                 <label class="form-label">Vote Links (one per line)</label>
                 <textarea class="form-control" name="link_vote" rows="3">{{ config.links.vote | join('\n') }}</textarea>
             </div>
-
-            <hr>
-            <h5>Rules</h5>
+            <div class="divider"></div>
+            <div class="section-title">Rules</div>
             <div class="mb-3">
                 <textarea class="form-control" name="rules" rows="5">{{ config.rules }}</textarea>
             </div>
-
-            <hr>
-            <h5>Welcome System</h5>
+            <div class="divider"></div>
+            <div class="section-title">Welcome System</div>
             <div class="form-check mb-3">
                 <input class="form-check-input" type="checkbox" name="welcome_enabled" id="welcome_enabled" {% if config.welcome.enabled %}checked{% endif %}>
                 <label class="form-check-label" for="welcome_enabled">Enable Welcome Messages</label>
@@ -50,16 +68,14 @@
                 <input type="text" class="form-control" name="welcome_message" value="{{ config.welcome.message }}">
                 <div class="form-text">Use {user} to mention the new member.</div>
             </div>
-
-            <hr>
-            <h5>Commands</h5>
+            <div class="divider"></div>
+            <div class="section-title">Commands</div>
             {% for cmd, enabled in config.commands.items() %}
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="checkbox" name="cmd_{{ cmd }}" id="cmd_{{ cmd }}" {% if enabled %}checked{% endif %}>
                 <label class="form-check-label" for="cmd_{{ cmd }}">{{ cmd }}</label>
             </div>
             {% endfor %}
-
             <div class="mt-4">
                 <button type="submit" class="btn btn-success">Save Configuration</button>
             </div>

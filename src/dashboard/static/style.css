@@ -1,0 +1,25 @@
+body{background:#0e0e0e;color:#e5e1d6}
+.navbar{background:#101010!important;border-bottom:1px solid #2a2320;box-shadow:0 6px 24px rgba(0,0,0,.6)}
+.container{max-width:980px;margin-top:64px}
+.card{background:#1a1612;border:1px solid #3a2f25;border-radius:10px;box-shadow:inset 0 0 0 1px #000,0 12px 32px rgba(0,0,0,.55)}
+.card-header{background:#221d18;color:#d2c19a;border-bottom:1px solid #3a2f25;font-family:Georgia,Palatino,serif;letter-spacing:.5px}
+.panel{background:#191511;border:1px solid #3a2f25;border-radius:12px;box-shadow:inset 0 0 0 1px #000,0 14px 38px rgba(0,0,0,.55)}
+.panel-header{background:#221d18;color:#d2c19a;border-bottom:1px solid #3a2f25;font-family:Georgia,Palatino,serif;font-weight:600;letter-spacing:.5px;padding:14px 18px}
+.panel-body{padding:18px}
+.section-title{font-family:Georgia,Palatino,serif;color:#d2c19a;margin-top:10px;margin-bottom:12px}
+.divider{height:1px;background:#2a2320;margin:18px 0}
+.form-label{color:#d9d3c4}
+.form-control{background:#0f0f10;border:1px solid #3f3a35;color:#e5e1d6;border-radius:8px}
+.form-control:focus{border-color:#8b7742;box-shadow:0 0 0 .2rem rgba(139,119,66,.25)}
+.form-check-input{background:#0f0f10;border:1px solid #3f3a35}
+.form-check-input:checked{background-color:#8b7742;border-color:#8b7742}
+.form-text{color:#a59c8a}
+.btn-success{background:#6f757b;border-color:#5a6065;color:#e5e1d6}
+.btn-success:hover{background:#5a6065;border-color:#4c5156}
+.btn-primary{background:#8b7742;border-color:#7a6a3a;color:#0e0e0e}
+.btn-primary:hover{background:#7a6a3a;border-color:#6b5d33;color:#0e0e0e}
+.btn-outline-light{border-color:#cfc7b3;color:#cfc7b3}
+.btn-outline-light:hover{background:#cfc7b3;color:#0e0e0e}
+.alert-danger{background:#2a0f10;border-color:#6e2023;color:#e9d8d8}
+.text-muted{color:#a59c8a!important}
+.title{font-family:Georgia,Palatino,serif;font-weight:600;color:#d2c19a;text-align:center;margin-bottom:16px}
