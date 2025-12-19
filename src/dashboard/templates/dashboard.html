@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-header">Configuration</div>
+    <div class="card-body">
+        <form method="post" action="/config/update">
+            <h5>Minecraft Server</h5>
+            <div class="mb-3">
+                <label class="form-label">IP</label>
+                <input type="text" class="form-control" name="minecraft_ip" value="{{ config.minecraft.ip }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Port</label>
+                <input type="number" class="form-control" name="minecraft_port" value="{{ config.minecraft.port }}">
+            </div>
+
+            <hr>
+            <h5>Links</h5>
+            <div class="mb-3">
+                <label class="form-label">Website</label>
+                <input type="url" class="form-control" name="link_website" value="{{ config.links.website }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Store</label>
+                <input type="url" class="form-control" name="link_store" value="{{ config.links.store }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Vote Links (one per line)</label>
+                <textarea class="form-control" name="link_vote" rows="3">{{ config.links.vote | join('\n') }}</textarea>
+            </div>
+
+            <hr>
+            <h5>Rules</h5>
+            <div class="mb-3">
+                <textarea class="form-control" name="rules" rows="5">{{ config.rules }}</textarea>
+            </div>
+
+            <hr>
+            <h5>Welcome System</h5>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" name="welcome_enabled" id="welcome_enabled" {% if config.welcome.enabled %}checked{% endif %}>
+                <label class="form-check-label" for="welcome_enabled">Enable Welcome Messages</label>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Channel ID</label>
+                <input type="number" class="form-control" name="welcome_channel_id" value="{{ config.welcome.channel_id }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Message</label>
+                <input type="text" class="form-control" name="welcome_message" value="{{ config.welcome.message }}">
+                <div class="form-text">Use {user} to mention the new member.</div>
+            </div>
+
+            <hr>
+            <h5>Commands</h5>
+            {% for cmd, enabled in config.commands.items() %}
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="cmd_{{ cmd }}" id="cmd_{{ cmd }}" {% if enabled %}checked{% endif %}>
+                <label class="form-check-label" for="cmd_{{ cmd }}">{{ cmd }}</label>
+            </div>
+            {% endfor %}
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success">Save Configuration</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

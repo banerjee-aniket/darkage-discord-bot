@@ -1,0 +1,33 @@
+{
+    "minecraft": {
+        "ip": "darkagesmp.enderman.cloud",
+        "port": 31938
+    },
+    "links": {
+        "website": "https://darkagesmp.VERCEL.APP",
+        "store": "https://darkagesmp.vercel.app",
+        "vote": [
+            "https://topg.org/minecraft-servers/server-123456",
+            "https://minecraft-server-list.com/server/123456"
+        ]
+    },
+    "rules": "1. No griefing\r\n2. No hacking\r\n3. Be respectful",
+    "welcome": {
+        "enabled": true,
+        "channel_id": 1442758763005345944,
+        "message": "Welcome {user} to DarkAge SMP!"
+    },
+    "commands": {
+        "ip": true,
+        "status": true,
+        "players": true,
+        "version": true,
+        "ping": true,
+        "vote": true,
+        "website": true,
+        "store": true,
+        "rules": true,
+        "help": true,
+        "motd": true
+    }
+}
